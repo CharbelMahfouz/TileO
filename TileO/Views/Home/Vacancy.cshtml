@@ -1,0 +1,34 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutFront.cshtml";
+}
+@model CareerVacancies
+
+<div class="div-block-129">
+    <div class="con900">
+        <div class="text-block-17">
+            <a href="/home/careers" class="link"><span>&lt;</span> Current Vacancies</a>
+        </div>
+        <h1 class="heading-26">@Model.Title</h1>
+        <h3 class="heading-27">Position Title</h3>
+        <div class="text-block-18">@Model.Title</div>
+        <h3 class="heading-27">Job-Summary:</h3>
+        <p class="paragraph-15">@Html.Raw(Model.Summary)</p>
+        <h3 class="heading-27">Job-Responsibilities:</h3>
+        <div class="rich-text-block-2 w-richtext">
+            @Html.Raw(Model.Responsabilities)
+        </div>
+        <h3 class="heading-27">Work Experience:</h3>
+        <div class="rich-text-block-2 w-richtext">
+            @Html.Raw(Model.Experience)
+        </div>
+        <h3 class="heading-27">Qualifications:</h3>
+        <div class="rich-text-block-2 w-richtext">
+            @Html.Raw(Model.Qualifications)
+        </div>
+        <h3 class="heading-27">About inHealth:</h3>
+        <div class="rich-text-block-2 w-richtext">
+            @Html.Raw(Model.About)
+        </div>
+    </div>
+    <div class="div-block-130"></div>
+</div>
