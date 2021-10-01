@@ -8,17 +8,18 @@ using Microsoft.Extensions.Logging;
 using TileO.Models;
 using Microsoft.AspNetCore.Authorization;
 
+
 namespace TileO.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        public static InHealthContext _context;
+
        
         
-        public HomeController(ILogger<HomeController> logger , InHealthContext context)
+        public HomeController(ILogger<HomeController> logger )
         {
-            _context = context;
+      
             _logger = logger;
         }
         
@@ -51,7 +52,10 @@ namespace TileO.Controllers
             return View();
         }
 
-        
+        public IActionResult Test()
+        {
+            return View();
+        }
 
 
 

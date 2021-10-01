@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TileO.Models
 {
@@ -13,10 +15,19 @@ namespace TileO.Models
             AspNetUserTokens = new HashSet<AspNetUserTokens>();
         }
 
+        [Key]
         public string Id { get; set; }
+        [Required]
+        public string Discriminator { get; set; }
+        [StringLength(200)]
+        public string Name { get; set; }
+        [StringLength(256)]
         public string UserName { get; set; }
+        [StringLength(256)]
         public string NormalizedUserName { get; set; }
+        [StringLength(256)]
         public string Email { get; set; }
+        [StringLength(256)]
         public string NormalizedEmail { get; set; }
         public bool EmailConfirmed { get; set; }
         public string PasswordHash { get; set; }
@@ -28,14 +39,14 @@ namespace TileO.Models
         public DateTimeOffset? LockoutEnd { get; set; }
         public bool LockoutEnabled { get; set; }
         public int AccessFailedCount { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string FirstLogin { get; set; }
-        public string Image { get; set; }
 
+        [InverseProperty("User")]
         public virtual ICollection<AspNetUserClaims> AspNetUserClaims { get; set; }
+        [InverseProperty("User")]
         public virtual ICollection<AspNetUserLogins> AspNetUserLogins { get; set; }
+        [InverseProperty("User")]
         public virtual ICollection<AspNetUserRoles> AspNetUserRoles { get; set; }
+        [InverseProperty("User")]
         public virtual ICollection<AspNetUserTokens> AspNetUserTokens { get; set; }
     }
 }
