@@ -15,6 +15,8 @@ namespace TileO.Models
         [StringLength(200)]
         public string Title { get; set; }
         public int? ProductId { get; set; }
+        [Column("isDeleted")]
+        public bool? IsDeleted { get; set; }
 
         [ForeignKey(nameof(ProductId))]
         [InverseProperty(nameof(Products.TilesTypes))]

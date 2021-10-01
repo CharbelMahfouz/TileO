@@ -17,10 +17,6 @@ namespace TileO.Models
 
         [Key]
         public string Id { get; set; }
-        [Required]
-        public string Discriminator { get; set; }
-        [StringLength(200)]
-        public string Name { get; set; }
         [StringLength(256)]
         public string UserName { get; set; }
         [StringLength(256)]
@@ -39,6 +35,10 @@ namespace TileO.Models
         public DateTimeOffset? LockoutEnd { get; set; }
         public bool LockoutEnabled { get; set; }
         public int AccessFailedCount { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string FirstLogin { get; set; }
+        public string Image { get; set; }
 
         [InverseProperty("User")]
         public virtual ICollection<AspNetUserClaims> AspNetUserClaims { get; set; }

@@ -8,8 +8,10 @@ namespace TileO.Models
     public partial class AspNetUserLogins
     {
         [Key]
+        [StringLength(128)]
         public string LoginProvider { get; set; }
         [Key]
+        [StringLength(128)]
         public string ProviderKey { get; set; }
         public string ProviderDisplayName { get; set; }
         [Required]

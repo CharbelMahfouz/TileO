@@ -10,8 +10,10 @@ namespace TileO.Models
         [Key]
         public string UserId { get; set; }
         [Key]
+        [StringLength(128)]
         public string LoginProvider { get; set; }
         [Key]
+        [StringLength(128)]
         public string Name { get; set; }
         public string Value { get; set; }
 

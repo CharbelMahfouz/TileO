@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TileO.Models;
 using Microsoft.AspNetCore.Authorization;
-
+using TileO.ViewModels;
 
 namespace TileO.Controllers
 {
@@ -15,17 +15,17 @@ namespace TileO.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-       
-        
-        public HomeController(ILogger<HomeController> logger )
+        private readonly TileoDbContext _context;
+
+        public HomeController(ILogger<HomeController> logger, TileoDbContext context )
         {
-      
+            _context = context;
             _logger = logger;
         }
         
         public IActionResult Index()
         {
-         
+           
             return View();
         }
 
@@ -55,6 +55,26 @@ namespace TileO.Controllers
         public IActionResult Test()
         {
             return View();
+        }
+
+        public IActionResult _Products()
+        {
+            var products = _context.Products.Where(x => x.IsDeleted == false).Select(x => new Product_VM
+            {
+                Description = x.Description,
+                ImageUrl = x.ImageUrl,
+                Title = x.Title,
+                ProductTypes = (List<ProductType_VM>)x.TilesTypes.Select(y => new ProductType_VM
+                {
+                    Title = y.Title,
+                    ImageUrl = y.ImageUrl,
+                    Id = y.Id,
+                    ProductId = y.ProductId
+                }),
+
+            })
+                .ToList();
+            return PartialView(products);
         }
 
 

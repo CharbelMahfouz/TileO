@@ -7,6 +7,7 @@ using TileO.Data;
 using TileO.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TileO.ViewModels;
 
 namespace TileO.Controllers
 {
@@ -14,10 +15,11 @@ namespace TileO.Controllers
     {
         private static Random random = new Random();
 
+        private readonly TileoDbContext _context;
         public static ApplicationDbContext _context2;
-        public AdminController(  ApplicationDbContext context2)
+        public AdminController(  ApplicationDbContext context2, TileoDbContext context)
         {
-
+            _context = context;
             _context2 = context2;
         }
 
@@ -30,8 +32,175 @@ namespace TileO.Controllers
         }
 
 
+        #region Products
+        public ActionResult Products()
+        {
+            var products = _context.Products.Where(x => x.IsDeleted == false).ToList();
+            return View(products);
+        }
+
+        public ActionResult CreateProduct()
+        {
+            return View();
+        }
 
 
+        public ActionResult Product(int id)
+        {
+            Products product = _context.Products.Where(x => x.Id == id && x.IsDeleted == false).FirstOrDefault();
+            if (product == null)
+            {
+                return RedirectToAction("Products");
+            }
+            return View(product);
+
+        }
+
+        public static string RandomStringNoCharacters(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvxyz0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
+        public async Task<string> SaveProduct()
+        {
+            var newSubcat = new Products();
+            newSubcat.CreatedDate = DateTime.UtcNow;
+            newSubcat.IsDeleted = false;
+            
+            newSubcat.Title = Request.Form["Title"].ToString();
+            newSubcat.Description = Request.Form["Description"].ToString();
+            var file = Request.Form.Files["Image"];
+            if (file != null)
+            {
+                var NewFileName = RandomStringNoCharacters(20) + file.FileName.ToString();
+
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", NewFileName);
+
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+                newSubcat.ImageUrl = NewFileName;
+            }
+            if (Request.Form["Id"].ToString() == "0")
+            {
+                _context.Products.Add(newSubcat);
+                _context.SaveChanges();
+                return newSubcat.Id.ToString();
+            }
+            else
+            {
+                int currID = Convert.ToInt32(Request.Form["Id"]);
+                var currBanner = _context.Products.Where(x => x.Id == currID).FirstOrDefault();
+                if (newSubcat.ImageUrl != null)
+                {
+                    currBanner.ImageUrl = newSubcat.ImageUrl;
+                }
+
+               
+                currBanner.Title = newSubcat.Title;
+                currBanner.Description = newSubcat.Description;
+                _context.SaveChanges();
+                return currBanner.Id.ToString();
+            }
+        }
+
+        public string DeleteProduct()
+        {
+
+            var ItemID = Convert.ToInt32(Request.Form["ID"]);
+            var currBanner = _context.Products.Where(x => x.Id == ItemID).FirstOrDefault();
+            currBanner.IsDeleted = true;
+            _context.SaveChanges();
+            return "Deleted";
+        }
+        #endregion
+
+        #region ProductType
+        public ActionResult ProductTypes(int id)
+        {
+            ViewBag.ProductId = id;
+            var productTypes = _context.TilesTypes.Where(x=> x.IsDeleted ==  false && x.ProductId == id).ToList();
+            return View(productTypes);
+        }
+
+        public ActionResult CreateProductType(int id)
+        {
+            ViewBag.ProductId = id;
+            return View();
+        }
+
+
+        public ActionResult ProductType(int id)
+        {
+            TilesTypes productType = _context.TilesTypes.Where(x => x.Id == id).FirstOrDefault();
+            if (productType == null)
+            {
+                return RedirectToAction("ProductTypes");
+            }
+            return View(productType);
+
+        }
+
+       
+
+        public async Task<string> SaveProductType()
+        {
+            var newSubcat = new TilesTypes();
+           newSubcat.ProductId = Convert.ToInt32(Request.Form["ProductId"]);
+            newSubcat.IsDeleted = false;
+            newSubcat.Title = Request.Form["Title"].ToString();
+            var file = Request.Form.Files["Image"];
+            if (file != null)
+            {
+                var NewFileName = RandomStringNoCharacters(20) + file.FileName.ToString();
+
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", NewFileName);
+
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+                newSubcat.ImageUrl = NewFileName;
+            }
+            if (Request.Form["Id"].ToString() == "0")
+            {
+                _context.TilesTypes.Add(newSubcat);
+                _context.SaveChanges();
+                return newSubcat.Id.ToString();
+            }
+            else
+            {
+                int currID = Convert.ToInt32(Request.Form["Id"]);
+                var currBanner = _context.TilesTypes.Where(x => x.Id == currID).FirstOrDefault();
+                if (newSubcat.ImageUrl != null)
+                {
+                    currBanner.ImageUrl = newSubcat.ImageUrl;
+                }
+
+
+                currBanner.Title = newSubcat.Title;
+                currBanner.ProductId = newSubcat.ProductId;
+               
+                _context.SaveChanges();
+                return currBanner.Id.ToString();
+            }
+        }
+
+        public string DeleteProductType()
+        {
+
+            var ItemID = Convert.ToInt32(Request.Form["ID"]);
+            var currBanner = _context.TilesTypes.Where(x => x.Id == ItemID).FirstOrDefault();
+            currBanner.IsDeleted = true;
+            _context.SaveChanges();
+            return "Deleted";
+        }
+        #endregion
+
+    
         //    #region Banners
         //    public ActionResult Banners()
         //    {          
