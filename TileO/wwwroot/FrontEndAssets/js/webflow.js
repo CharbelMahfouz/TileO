@@ -48,3 +48,9 @@ Webflow.require('ix2').init(
 );
 
 console.log("js file ")
+const productsDropdownBtn = document.querySelector(".products-dropdown");
+productsDropdownBtn.addEventListener("click", () => {
+    $("#products").load("/home/_Products");
+    console.log("click")
+})
+
