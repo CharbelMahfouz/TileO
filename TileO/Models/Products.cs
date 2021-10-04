@@ -25,6 +25,10 @@ namespace TileO.Models
         public string ImageUrl { get; set; }
         [StringLength(1000)]
         public string Description { get; set; }
+        [StringLength(300)]
+        public string DivId { get; set; }
+        [StringLength(300)]
+        public string HrefId { get; set; }
 
         [InverseProperty("Product")]
         public virtual ICollection<TilesTypes> TilesTypes { get; set; }
